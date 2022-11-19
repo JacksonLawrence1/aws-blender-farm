@@ -17,4 +17,4 @@ WIP:
 
 ### 
 
-You MUST set an IAM role so that the EC2 instances can access the s3 bucket.
+You MUST set an IAM role (LabRole ideally) so that the EC2 instances can access the s3 bucket.
