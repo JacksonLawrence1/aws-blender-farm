@@ -3,10 +3,16 @@ import time
 import subprocess
 import sys
 import os
+import re
 
 queue_name = 'render-processing-queue.fifo'
 region = "us-east-1"
-bucket_name = "s3://cw22-56-blender-bucket"
+bucket_name = "cw22-56-blender-bucket"
+
+# gets the last numbers of a string so it knows what frames to render
+def get_trailing_numbers(s):
+    m = re.search(r'\d+$', s)
+    return int(m.group()) if m else None
 
 def get_work(queue, retry=0):    
     # try getting jobs on queue
@@ -20,37 +26,41 @@ def get_work(queue, retry=0):
         
         # Let the queue know that the message is processed
         message[0].delete()
+        frame_number = get_trailing_numbers(body)
         
         # render file
-        frame_number = body[-1]
-        # blender -b blendfile.blend -o /frames/frame_# -f 2
-        # subprocess.run(["blender", "-b", "blendfile.blend", "-o", "-f", frame_number])
         render_frame(frame_number)
         print('{} was rendered, looking for more work'.format(body))
                 
         # reset retry value
         local_retry = 0
     
-    # If nothing on queue then wait 5 seconds before checking again
+    # When nothing is on the queue
     except Exception:
-        if (local_retry >= 12):
-            # terminate instance
-            print("Terminating instance, no work on queue for 1 minute.")
+        # if has been waiting over 15 seconds with nothing on queue, terminate
+        if (local_retry >= 3):
+            print("Terminating instance, no work to be done.")
+            
+            # terminate instance here
             sys.exit()
         else:
+            # checks if any frames exist in directory
             if (len(os.listdir('/home/ec2-user/frames/')) > 0):
                 # upload all frames to s3 bucket if no work found on queue
-                subprocess.run("sudo aws s3 cp /home/ec2-user/frames/ {}/image-files/ --recursive".format(bucket_name), shell=True)
+                subprocess.run("sudo aws s3 cp /home/ec2-user/frames/ s3://{}/image-files/ --recursive".format(bucket_name), shell=True)
                 print("uploaded all frames to bucket")
                 # remove all files within frames directory
                 subprocess.run("sudo rm -R /home/ec2-user/frames/*", shell=True)
+            
+            # Wait 5 seconds before checking the queue again
             print("No work on queue waiting before checking again.")
             local_retry += 1
             time.sleep(5)
     get_work(queue, local_retry)
 
+# runs blender's command line rendering
 def render_frame(frame_number):
-    subprocess.run("sudo blender -b box.blend -o /home/ec2-user/frames/frame_##### -f {}".format(frame_number), shell=True)
+    subprocess.run("sudo blender -b /home/ec2-user/box.blend -o /home/ec2-user/frames/frame_##### -f {}".format(frame_number), shell=True)
     
 # start of program
 if __name__ == "__main__":

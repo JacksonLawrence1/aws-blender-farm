@@ -1,0 +1,7 @@
+[Variables]
+blendfile = box.blend
+key = key
+queue_name = render-processing-queue.fifo
+region = us-east-1
+bucket_name = s3://cw22-56-blender-bucket
+iam_role = arn:aws:iam::325356440011:instance-profile/LabInstanceProfile
