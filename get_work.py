@@ -10,6 +10,7 @@ region = "us-east-1"
 bucket_name = "cw22-56-blender-bucket"
 
 # gets the last numbers of a string so it knows what frames to render
+# https://stackoverflow.com/questions/7085512/check-what-number-a-string-ends-with-in-python
 def get_trailing_numbers(s):
     m = re.search(r'\d+$', s)
     return int(m.group()) if m else None
