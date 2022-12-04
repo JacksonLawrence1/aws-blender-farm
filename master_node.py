@@ -7,7 +7,8 @@ region = "us-east-1"
 bucket_name = "cw22-56-blender-bucket"
 queue_name = "render-processing-queue.fifo"
 key = "key"
-amount_of_frames = 10
+blendfile = "blendfile.blend"
+amount_of_frames = 32
 
 # given an ec2 client and instance id, terminates that instance
 def terminate_server(ids):
@@ -22,7 +23,7 @@ def create_server(count=1):
             ImageId="ami-077f76ddac8d4699f",
             MinCount=1,
             MaxCount=count,
-            InstanceType="t2.micro",
+            InstanceType="c6i.large",
             KeyName=key,
             IamInstanceProfile={'Arn' : iam_role}
         )
@@ -57,9 +58,9 @@ def launch_cluster():
                                                     # copy the script to the ec2 instance
                                                     'aws s3 cp s3://{}/scripts/get_work.py .'.format(bucket_name),
                                                     # get the box.blend file
-                                                    'aws s3 cp s3://{}/blender-files/box.blend /home/ec2-user/'.format(bucket_name),
+                                                    'aws s3 cp s3://{}/blender-files/{} /home/ec2-user/'.format(bucket_name, blendfile),
                                                     # install boto3
-                                                    'pip3 install boto3',
+                                                    'pip3 install --user boto3',
                                                     # make a frames directory
                                                     'mkdir /home/ec2-user/frames',
                                                     # run script
@@ -69,7 +70,6 @@ def launch_cluster():
             retry = False
             print("Instances {} are sucessfully running and commands have been sent.".format(instance_ids))
         except Exception:
-            print("Instances are still booting, waiting before trying again")
             time.sleep(5)
         
     return instance_ids
@@ -114,20 +114,27 @@ def split_work():
         workers = amount_of_frames // 20
         
     # CHANGE THIS WHEN NEED SCALING
-    workers = 1
+    workers = 8
+    
+    if (workers > amount_of_frames):
+        print("Cannot have more workers than frames")
+        sys.exit()
     return workers
 
 # start of program
 if __name__ == "__main__":
     # send message to queue that work needs to be done
     send_work_remote()
-
+    start_time = time.time()
+    
     # launch cluster based on amount of frames
     instance_ids = launch_cluster()
+    print("--- %s seconds to initialise cluster ---" % (time.time() - start_time))
     
     # continually check bucket to check if all frames have been rendered
     check_job_completion()
     
+    print("--- %s seconds to complete job ---" % (time.time() - start_time))
     # compile frames from bucket using ffmpeg
     print("Job has been completed! Awaiting instance termination.")
     

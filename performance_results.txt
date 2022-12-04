@@ -1,0 +1,17 @@
+on computer:
+
+32.41 seconds per frame
+107.5 minutes
+1 hour 48 minutes
+
+t2.micro
+309.52
+5 minutes 9 seconds
+
+m5.large
+6 minutes 30 seconds
+
+c6i.large
+33.99 to initialise
+178.62 (3 minutes) seconds per frame
+597 or 10 hours minutes to render whole animation

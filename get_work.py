@@ -8,6 +8,7 @@ import re
 queue_name = 'render-processing-queue.fifo'
 region = "us-east-1"
 bucket_name = "cw22-56-blender-bucket"
+blendfile = "blendfile.blend"
 
 # gets the last numbers of a string so it knows what frames to render
 # https://stackoverflow.com/questions/7085512/check-what-number-a-string-ends-with-in-python
@@ -46,7 +47,9 @@ def get_work(queue, retry=0):
             sys.exit()
         else:
             # checks if any frames exist in directory
+            print(len(os.listdir('/home/ec2-user/frames/')))
             if (len(os.listdir('/home/ec2-user/frames/')) > 0):
+                print('uploading frames to bucket')
                 # upload all frames to s3 bucket if no work found on queue
                 subprocess.run("sudo aws s3 cp /home/ec2-user/frames/ s3://{}/image-files/ --recursive".format(bucket_name), shell=True)
                 print("uploaded all frames to bucket")
@@ -61,7 +64,7 @@ def get_work(queue, retry=0):
 
 # runs blender's command line rendering
 def render_frame(frame_number):
-    subprocess.run("sudo blender -b /home/ec2-user/box.blend -o /home/ec2-user/frames/frame_##### -f {}".format(frame_number), shell=True)
+    subprocess.run("sudo blender -b /home/ec2-user/{} -o /home/ec2-user/frames/frame_##### -f {}".format(blendfile, frame_number), shell=True)
     
 # start of program
 if __name__ == "__main__":
