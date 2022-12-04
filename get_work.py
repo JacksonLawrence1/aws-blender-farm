@@ -26,12 +26,14 @@ def get_work(queue, retry=0):
         message_group_id = message[0].attributes.get('MessageGroupId')
         print('Work for {} received by {}'.format(body, message_group_id))
         
-        # Let the queue know that the message is processed
-        message[0].delete()
         frame_number = get_trailing_numbers(body)
         
         # render file
         render_frame(frame_number)
+        
+        # Delete message AFTER finished rendering
+        message[0].delete()
+        
         print('{} was rendered, looking for more work'.format(body))
                 
         # reset retry value
@@ -39,8 +41,8 @@ def get_work(queue, retry=0):
     
     # When nothing is on the queue
     except Exception:
-        # if has been waiting over 15 seconds with nothing on queue, terminate
-        if (local_retry >= 3):
+        # if has been waiting over 50 seconds with nothing on queue, terminate
+        if (local_retry >= 10):
             print("Terminating instance, no work to be done.")
             
             # terminate instance here
