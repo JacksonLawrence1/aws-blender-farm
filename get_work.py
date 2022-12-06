@@ -5,7 +5,7 @@ import sys
 import os
 import re
 
-queue_name = 'render-processing-queue.fifo'
+queue_name = "render-processing-queue.fifo"
 region = "us-east-1"
 bucket_name = "cw22-56-blender-bucket"
 blendfile = "blendfile.blend"

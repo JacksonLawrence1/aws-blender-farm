@@ -1,24 +1,61 @@
 import boto3
 import time
-import sys
 import random
+import argparse
+import initialise_components
 
 iam_role = "arn:aws:iam::325356440011:instance-profile/LabInstanceProfile"
 region = "us-east-1"
 bucket_name = "cw22-56-blender-bucket"
 queue_name = "render-processing-queue.fifo"
-key = "key"
 blendfile = "blendfile.blend"
-amount_of_frames = 32
+amount_of_frames = 8
+start_workers = -1
 
-chaos_testing = False
 termination_count = 0
 
+parser = argparse.ArgumentParser(description='Options')
+
+# see help in each argument
+parser.add_argument('--workers', type=int,
+                    help='How many workers you want (leave empty to let program decide, max 8)')
+parser.add_argument('--frames', type=int,
+                    help='How many frames you want')
+parser.add_argument('--chaos_test', type=bool,
+                    help='If you want to perform chaos testing')
+
+args = parser.parse_args()
+
+# use blender to get blender frames
+if (args.frames is not None and args.frames > 0):
+    amount_of_frames = args.frames
+if (args.workers is not None and args.workers <= 8 and args.workers <= amount_of_frames):
+    start_workers = args.workers
+    
+def parse_variables(variables_file):
+    new_variables = initialise_components.get_variables(variables_file)
+    
+    global blendfile, queue_name, region, bucket_name, iam_role
+    
+    # formatted to: (blendfile, queue_name, region, bucket_name, iam_role, key)
+    blendfile, queue_name, region, bucket_name, iam_role = new_variables
+    
+
 # given an ec2 client and instance id, terminates that instance
-def terminate_server(ids):
+def termination(ids):
     client = boto3.client('ec2', region_name=region)
+    
+    # terminate instances
     client.terminate_instances(InstanceIds=ids,)
     print("Termination of instances {} successful.".format(ids))
+    
+    # terminate SQS queue
+    terminate_queue(queue_name)
+
+def terminate_queue(queueurl):
+    client = boto3.client('sqs', region_name=region)
+    client.delete_queue(QueueUrl=queueurl)
+    print("Termination of SQS queue {} successful. ".format(queueurl))
 
 # creates a server given the key name
 def create_server(count=1):
@@ -28,7 +65,6 @@ def create_server(count=1):
             MinCount=1,
             MaxCount=count,
             InstanceType="c6i.large",
-            KeyName=key,
             IamInstanceProfile={'Arn' : iam_role}
         )
     for instance in instances:
@@ -73,13 +109,6 @@ def check_all_instances(instance_ids):
         
     return new_instances
 
-def launch_sqs_queue():
-    # TODO:
-    # FIFO Queue
-    # Visibility timer = 5 mins
-    # content-based duplication = true
-    return
-
 def initialise_instance(instance_ids):
     retry = True
     while retry:
@@ -120,11 +149,18 @@ def launch_cluster():
     # split work into nodes based on how many frames there are
     workers = split_work()
     
+    # creates server cluster
     print("Initialising cluster, please wait.")
     instances = create_server(workers)
-    print("Waiting for cluster to be ready")
     
-    # waits until all instances are in running state (ready to execute commands)
+    # whilst servers are initialising
+    # create s3 bucket and upload files
+    initialise_components.initailise_s3_bucket(queue_name, region, bucket_name, blendfile)
+    # create sqs queue
+    initialise_components.initialise_sqs_queue(queue_name, region)
+    
+    print("Waiting for cluster to be ready")
+    # check all instances are in running state (ready to execute commands)
     instance_ids = get_instance_ids(instances)
         
     # attempts to run commands, if not keep retrying
@@ -145,13 +181,13 @@ def send_work_remote(id='user'):
         if (response.get('Failed') != None):
             print('frame{} : was sent unsuccessfully by user {}!!!'.format(i, id))
         #print('frame{} : was sent successfully by user {}!'.format(i, id))
-    print("Frames sent to queue successfully.")
+    print("{} frames were sent to queue successfully.".format(amount_of_frames))
 
 # returns amount of items in the directory
 # only returns a max of 1000 items due to boto3 restrictions
 def get_image_folder_size():
     objs = boto3.client('s3').list_objects_v2(Bucket=bucket_name, Prefix='image-files/')
-    return int(objs['KeyCount']) - 1 
+    return int(objs['KeyCount'])
 
 def random_termination(instance_ids):
     terminate = random.randrange(0, 21)
@@ -183,7 +219,7 @@ def check_job_completion(instance_ids):
         # wait 5 seconds before checking again
         else:
             # if we are randomly doing chaos testing then do termination function
-            if (chaos_testing):
+            if (args.chaos_test is not None):
                 random_termination(current_instances)
                 
             # checks if all instances are running properly, if not bring up replacements
@@ -193,45 +229,55 @@ def check_job_completion(instance_ids):
     # gives the rest of instances        
     return current_instances
 
-# split work up for every 20 frames have 1 worker to work on it
+# scales amount of workers based on frame count
 def split_work():
-    workers = 0
-    if amount_of_frames < 20:
-        workers = 1
+    final_workers = 0
+    if (start_workers != -1):
+        final_workers = start_workers
     else:
-        workers = amount_of_frames // 20
-        
-    # CHANGE THIS WHEN NEED SCALING
-    workers = 8
-    
-    if (workers > amount_of_frames):
-        print("Cannot have more workers than frames")
-        sys.exit()
-    return workers
+        if (amount_of_frames < 8 and amount_of_frames > 0):
+            final_workers = amount_of_frames
+        elif (amount_of_frames >= 8):
+            final_workers = 8
+        else:
+            print("Invalid amount of frames set.")
+            
+    return final_workers
+
+# simply splits workers up for every 20 frames
+def split_work_20():
+    final_workers = amount_of_frames // 20
+    return final_workers
 
 # start of program
 if __name__ == "__main__":
-    if (chaos_testing):
-        print('Chaos testing enabled.')
-    
-    # send message to queue that work needs to be done
-    send_work_remote()
     start_time = time.time()
     
+    # first parse variables from text file
+    parse_variables('variables.txt')
+    
+    if (args.chaos_test is not None):
+        print('Chaos testing enabled.')
+        
     # launch cluster based on amount of frames
     instance_ids = launch_cluster()
     print("--- %s seconds to initialise cluster ---" % (time.time() - start_time))
+    
+    # send work to queue that work needs to be done
+    send_work_remote()
     
     # continually check bucket to check if all frames have been rendered
     instance_ids = check_job_completion(instance_ids)
     
     # print how many instances were terminated during chaos testing
-    if (chaos_testing):
+    if (args.chaos_test is not None):
         print("{} instances were randomly terminated during chaos testing.".format(termination_count))
         
     print("--- Job completed in %s seconds ---" % (time.time() - start_time))
     
+    print("See inside bucket /image-files/ for your rendered files!")
+    
     print("Awaiting instance termination.")
     # wait 5 seconds for small cleanup
     time.sleep(5)
-    terminate_server(instance_ids)
+    termination(instance_ids)
