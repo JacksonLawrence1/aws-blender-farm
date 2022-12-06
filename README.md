@@ -20,8 +20,8 @@ blend_render_info.py was NOT made by me, it is a python script made by the Blend
 ### Setup variables.txt
 
 The variables.txt file contains variables which should be setup beforehand, but most are already setup for a sample tutorial.
-- [ ] blendfile: you can leave this as blendfile.blend which is provided
-- [ ] queue_name: if you want to name the sqs queue, however you can leave this as is, as it gets deleted afterwards
+- [ ] blendfile: the blender file you want rendered, this does not work with blender files that don't use CYCLES as the rendering engine or 2D animations! You can leave this as blendfile.blend which is provided for demo.
+- [ ] queue_name: if you want to name the sqs queue, however you can leave this as is, as it gets deleted afterwards. Must be a FIFO queue, end with .fifo
 - [ ] region: if you want to change the region of aws components, but should be left as us-east-1
 - [ ] bucket_name: The name of the s3 bucket which uploads your rendered frames after complete, this will not be deleted automatically so ideally name it something you can find easily.
 - [ ] iam_role: this has been set as the IAM Lab Instance profile which allows the EC2 instance to communicate with the queue and bucket. This may work as is, but most likely the current profile is specific to the user, so you may have to change it accordingly to another *all-powerful* role. It is of the format *arn:aws:iam::325356440011:instance-profile/LabInstanceProfile*.
