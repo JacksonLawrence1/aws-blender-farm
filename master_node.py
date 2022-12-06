@@ -3,14 +3,15 @@ import time
 import random
 import argparse
 import initialise_components
+import blend_render_info
+import sys
 
 iam_role = "arn:aws:iam::325356440011:instance-profile/LabInstanceProfile"
 region = "us-east-1"
 bucket_name = "cw22-56-blender-bucket"
 queue_name = "render-processing-queue.fifo"
 blendfile = "blendfile.blend"
-amount_of_frames = 8
-start_workers = -1
+amount_of_frames = -1
 
 termination_count = 0
 
@@ -25,32 +26,34 @@ parser.add_argument('--chaos_test', type=bool,
                     help='If you want to perform chaos testing')
 
 args = parser.parse_args()
-
-# use blender to get blender frames
-if (args.frames is not None and args.frames > 0):
-    amount_of_frames = args.frames
-if (args.workers is not None and args.workers <= 8 and args.workers <= amount_of_frames):
-    start_workers = args.workers
     
 def parse_variables(variables_file):
     new_variables = initialise_components.get_variables(variables_file)
     
-    global blendfile, queue_name, region, bucket_name, iam_role
+    global blendfile, queue_name, region, bucket_name, iam_role, amount_of_frames
     
     # formatted to: (blendfile, queue_name, region, bucket_name, iam_role, key)
     blendfile, queue_name, region, bucket_name, iam_role = new_variables
+        
+    # if user specifies frames then store
+    if (args.frames is not None and args.frames > 0):
+        amount_of_frames = args.frames
+    # else get all frames from the blendfile
+    else:
+        frames = int(blend_render_info.read_blend_rend_chunk(blendfile)[0][1])
+        if (args.workers is not None and args.workers > frames):
+            print("Cannot have more workers than frames!")
+        else: 
+            amount_of_frames = int(blend_render_info.read_blend_rend_chunk(blendfile)[0][1])
     
 
 # given an ec2 client and instance id, terminates that instance
-def termination(ids):
+def terminate_server(ids):
     client = boto3.client('ec2', region_name=region)
     
     # terminate instances
     client.terminate_instances(InstanceIds=ids,)
     print("Termination of instances {} successful.".format(ids))
-    
-    # terminate SQS queue
-    terminate_queue(queue_name)
 
 def terminate_queue(queueurl):
     client = boto3.client('sqs', region_name=region)
@@ -232,16 +235,21 @@ def check_job_completion(instance_ids):
 # scales amount of workers based on frame count
 def split_work():
     final_workers = 0
-    if (start_workers != -1):
-        final_workers = start_workers
+    # sets amount of workers to how many user set in user args (if <= 8) 
+    if (args.workers is not None and args.workers <= 8):
+        final_workers = args.workers
+    # otherwise
     else:
+        # if frames are > 0 and < 8 then set amount of workers to amount of frames
         if (amount_of_frames < 8 and amount_of_frames > 0):
             final_workers = amount_of_frames
+        # cap workers to 8 as that is what AWS limits
         elif (amount_of_frames >= 8):
             final_workers = 8
+        # some error has happened otherwise
         else:
-            print("Invalid amount of frames set.")
-            
+            print("Error whilst trying to get frames")
+            sys.exit()            
     return final_workers
 
 # simply splits workers up for every 20 frames
@@ -276,8 +284,13 @@ if __name__ == "__main__":
     print("--- Job completed in %s seconds ---" % (time.time() - start_time))
     
     print("See inside bucket /image-files/ for your rendered files!")
+    print("Ensure to empty the image-files or delete the bucket to ensure the program works again!")
     
     print("Awaiting instance termination.")
     # wait 5 seconds for small cleanup
     time.sleep(5)
-    termination(instance_ids)
+    
+    # terminate EC2 instances
+    terminate_server(instance_ids)
+    # terminate SQS queue
+    terminate_queue(queue_name)
