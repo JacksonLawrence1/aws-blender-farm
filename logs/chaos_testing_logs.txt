@@ -1,0 +1,138 @@
+Chaos testing enabled.
+Frames sent to queue successfully.
+Initialising cluster, please wait.
+Instance of id: i-0f11b4e30b9950411 sucessfully launched
+Instance of id: i-0aa1ff76bc6f55d95 sucessfully launched
+Instance of id: i-07b22d61ecac65747 sucessfully launched
+Instance of id: i-04642862f71d3075d sucessfully launched
+Instance of id: i-00f33bc6ab33b113e sucessfully launched
+Instance of id: i-09d8d2c16274ee896 sucessfully launched
+Instance of id: i-0770655f55524e0fb sucessfully launched
+Instance of id: i-0dbb7e0c0d96ee01d sucessfully launched
+Waiting for cluster to be ready
+Instances ['i-0f11b4e30b9950411', 'i-0aa1ff76bc6f55d95', 'i-07b22d61ecac65747', 'i-04642862f71d3075d', 'i-00f33bc6ab33b113e', 'i-09d8d2c16274ee896', 'i-0770655f55524e0fb', 'i-0dbb7e0c0d96ee01d'] are sucessfully running and commands have been sent.
+--- 62.843252420425415 seconds to initialise cluster ---
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-04642862f71d3075d', 'i-07b22d61ecac65747', 'i-0aa1ff76bc6f55d95', 'i-00f33bc6ab33b113e'], terminating...
+Termination of instances ['i-04642862f71d3075d', 'i-07b22d61ecac65747', 'i-0aa1ff76bc6f55d95', 'i-00f33bc6ab33b113e'] successful.
+Instance id(s) ['i-0aa1ff76bc6f55d95', 'i-07b22d61ecac65747', 'i-04642862f71d3075d', 'i-00f33bc6ab33b113e'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-086c546708efe3bf3 sucessfully launched
+Instance of id: i-00fd4a7cd79ac0e11 sucessfully launched
+Instance of id: i-09cc89c8a4f1982fc sucessfully launched
+Instance of id: i-0b83be95e8e94bc33 sucessfully launched
+Instances ['i-086c546708efe3bf3', 'i-00fd4a7cd79ac0e11', 'i-09cc89c8a4f1982fc', 'i-0b83be95e8e94bc33'] are sucessfully running and commands have been sent.
+New instances ['i-086c546708efe3bf3', 'i-00fd4a7cd79ac0e11', 'i-09cc89c8a4f1982fc', 'i-0b83be95e8e94bc33'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-0770655f55524e0fb', 'i-09d8d2c16274ee896', 'i-09cc89c8a4f1982fc', 'i-086c546708efe3bf3'], terminating...
+Termination of instances ['i-0770655f55524e0fb', 'i-09d8d2c16274ee896', 'i-09cc89c8a4f1982fc', 'i-086c546708efe3bf3'] successful.
+Instance id(s) ['i-09d8d2c16274ee896', 'i-0770655f55524e0fb', 'i-086c546708efe3bf3', 'i-09cc89c8a4f1982fc'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-07347fc15a7b6f14a sucessfully launched
+Instance of id: i-069aba17425f9f1f6 sucessfully launched
+Instance of id: i-0fb0d80828ae9585d sucessfully launched
+Instance of id: i-00d9ccb1e0c75ba23 sucessfully launched
+Instances ['i-07347fc15a7b6f14a', 'i-069aba17425f9f1f6', 'i-0fb0d80828ae9585d', 'i-00d9ccb1e0c75ba23'] are sucessfully running and commands have been sent.
+New instances ['i-07347fc15a7b6f14a', 'i-069aba17425f9f1f6', 'i-0fb0d80828ae9585d', 'i-00d9ccb1e0c75ba23'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-0fb0d80828ae9585d'], terminating...
+Termination of instances ['i-0fb0d80828ae9585d'] successful.
+Instance id(s) ['i-0fb0d80828ae9585d'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-0ecee6acfb06bfd1d sucessfully launched
+Instances ['i-0ecee6acfb06bfd1d'] are sucessfully running and commands have been sent.
+New instances ['i-0ecee6acfb06bfd1d'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-0dbb7e0c0d96ee01d', 'i-00d9ccb1e0c75ba23', 'i-069aba17425f9f1f6'], terminating...
+Termination of instances ['i-0dbb7e0c0d96ee01d', 'i-00d9ccb1e0c75ba23', 'i-069aba17425f9f1f6'] successful.
+Instance id(s) ['i-0dbb7e0c0d96ee01d', 'i-069aba17425f9f1f6', 'i-00d9ccb1e0c75ba23'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-0982b0f8af85e2d4e sucessfully launched
+Instance of id: i-026bb4143bcb0f8c4 sucessfully launched
+Instance of id: i-03a23d65f638efb80 sucessfully launched
+Instances ['i-0982b0f8af85e2d4e', 'i-026bb4143bcb0f8c4', 'i-03a23d65f638efb80'] are sucessfully running and commands have been sent.
+New instances ['i-0982b0f8af85e2d4e', 'i-026bb4143bcb0f8c4', 'i-03a23d65f638efb80'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-0982b0f8af85e2d4e'], terminating...
+Termination of instances ['i-0982b0f8af85e2d4e'] successful.
+Instance id(s) ['i-0982b0f8af85e2d4e'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-071eed80b22dcf7d5 sucessfully launched
+Instances ['i-071eed80b22dcf7d5'] are sucessfully running and commands have been sent.
+New instances ['i-071eed80b22dcf7d5'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-00fd4a7cd79ac0e11', 'i-03a23d65f638efb80'], terminating...
+Termination of instances ['i-00fd4a7cd79ac0e11', 'i-03a23d65f638efb80'] successful.
+Instance id(s) ['i-00fd4a7cd79ac0e11', 'i-03a23d65f638efb80'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-05826e81dd0f6a60c sucessfully launched
+Instance of id: i-06c492570c5b97943 sucessfully launched
+Instances ['i-05826e81dd0f6a60c', 'i-06c492570c5b97943'] are sucessfully running and commands have been sent.
+New instances ['i-05826e81dd0f6a60c', 'i-06c492570c5b97943'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-026bb4143bcb0f8c4', 'i-0ecee6acfb06bfd1d', 'i-06c492570c5b97943'], terminating...
+Termination of instances ['i-026bb4143bcb0f8c4', 'i-0ecee6acfb06bfd1d', 'i-06c492570c5b97943'] successful.
+Instance id(s) ['i-0ecee6acfb06bfd1d', 'i-026bb4143bcb0f8c4', 'i-06c492570c5b97943'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-07dbbc57fec578c21 sucessfully launched
+Instance of id: i-05a39a91a90b5d1b2 sucessfully launched
+Instance of id: i-04bbd4a3c98b61eea sucessfully launched
+Instances ['i-07dbbc57fec578c21', 'i-05a39a91a90b5d1b2', 'i-04bbd4a3c98b61eea'] are sucessfully running and commands have been sent.
+New instances ['i-07dbbc57fec578c21', 'i-05a39a91a90b5d1b2', 'i-04bbd4a3c98b61eea'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-05a39a91a90b5d1b2', 'i-071eed80b22dcf7d5'], terminating...
+Termination of instances ['i-05a39a91a90b5d1b2', 'i-071eed80b22dcf7d5'] successful.
+Instance id(s) ['i-071eed80b22dcf7d5', 'i-05a39a91a90b5d1b2'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-061d845a614938e40 sucessfully launched
+Instance of id: i-002e11cdb1e7cd176 sucessfully launched
+Instances ['i-061d845a614938e40', 'i-002e11cdb1e7cd176'] are sucessfully running and commands have been sent.
+New instances ['i-061d845a614938e40', 'i-002e11cdb1e7cd176'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-05826e81dd0f6a60c', 'i-0b83be95e8e94bc33', 'i-002e11cdb1e7cd176', 'i-07dbbc57fec578c21'], terminating...
+Termination of instances ['i-05826e81dd0f6a60c', 'i-0b83be95e8e94bc33', 'i-002e11cdb1e7cd176', 'i-07dbbc57fec578c21'] successful.
+Instance id(s) ['i-0b83be95e8e94bc33', 'i-05826e81dd0f6a60c', 'i-07dbbc57fec578c21', 'i-002e11cdb1e7cd176'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-044acf51370e3854c sucessfully launched
+Instance of id: i-0541b15a714dabedd sucessfully launched
+Instance of id: i-0e8b2c08fa7455e6e sucessfully launched
+Instance of id: i-0c77a8f3e644838cb sucessfully launched
+Instances ['i-044acf51370e3854c', 'i-0541b15a714dabedd', 'i-0e8b2c08fa7455e6e', 'i-0c77a8f3e644838cb'] are sucessfully running and commands have been sent.
+New instances ['i-044acf51370e3854c', 'i-0541b15a714dabedd', 'i-0e8b2c08fa7455e6e', 'i-0c77a8f3e644838cb'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-07347fc15a7b6f14a', 'i-0c77a8f3e644838cb', 'i-061d845a614938e40', 'i-04bbd4a3c98b61eea'], terminating...
+Termination of instances ['i-07347fc15a7b6f14a', 'i-0c77a8f3e644838cb', 'i-061d845a614938e40', 'i-04bbd4a3c98b61eea'] successful.
+Instance id(s) ['i-07347fc15a7b6f14a', 'i-04bbd4a3c98b61eea', 'i-061d845a614938e40', 'i-0c77a8f3e644838cb'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-0169603b2adbbfdd5 sucessfully launched
+Instance of id: i-0f4014c74fde51f1e sucessfully launched
+Instance of id: i-003a2a3c1914b3589 sucessfully launched
+Instance of id: i-00311c869310aca8f sucessfully launched
+Instances ['i-0169603b2adbbfdd5', 'i-0f4014c74fde51f1e', 'i-003a2a3c1914b3589', 'i-00311c869310aca8f'] are sucessfully running and commands have been sent.
+New instances ['i-0169603b2adbbfdd5', 'i-0f4014c74fde51f1e', 'i-003a2a3c1914b3589', 'i-00311c869310aca8f'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-0e8b2c08fa7455e6e', 'i-0f4014c74fde51f1e', 'i-0541b15a714dabedd'], terminating...
+Termination of instances ['i-0e8b2c08fa7455e6e', 'i-0f4014c74fde51f1e', 'i-0541b15a714dabedd'] successful.
+Instance id(s) ['i-0541b15a714dabedd', 'i-0e8b2c08fa7455e6e', 'i-0f4014c74fde51f1e'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-06a6007fa0832f9dd sucessfully launched
+Instance of id: i-05513e6124d0108fd sucessfully launched
+Instance of id: i-08a0c75517616bd68 sucessfully launched
+Instances ['i-06a6007fa0832f9dd', 'i-05513e6124d0108fd', 'i-08a0c75517616bd68'] are sucessfully running and commands have been sent.
+New instances ['i-06a6007fa0832f9dd', 'i-05513e6124d0108fd', 'i-08a0c75517616bd68'] have been initialised and launched!
+Waiting on job completion...
+Choosing instances for termination
+Randomly chosen instance ids: ['i-05513e6124d0108fd', 'i-0f11b4e30b9950411', 'i-08a0c75517616bd68'], terminating...
+Termination of instances ['i-05513e6124d0108fd', 'i-0f11b4e30b9950411', 'i-08a0c75517616bd68'] successful.
+Instance id(s) ['i-0f11b4e30b9950411', 'i-05513e6124d0108fd', 'i-08a0c75517616bd68'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-043dc5985caca25b1 sucessfully launched
+Instance of id: i-0f5c719c57e0b896c sucessfully launched
+Instance of id: i-0a0f3b0b565f18ef9 sucessfully launched
+Instances ['i-043dc5985caca25b1', 'i-0f5c719c57e0b896c', 'i-0a0f3b0b565f18ef9'] are sucessfully running and commands have been sent.
+New instances ['i-043dc5985caca25b1', 'i-0f5c719c57e0b896c', 'i-0a0f3b0b565f18ef9'] have been initialised and launched!
+Waiting on job completion...
+Job completed! terminating instances.
+34 instances were randomly terminated during chaos testing.
+--- Job completed in 1728.5147659778595 seconds ---
+Awaiting instance termination.
+Termination of instances ['i-044acf51370e3854c', 'i-0169603b2adbbfdd5', 'i-003a2a3c1914b3589', 'i-00311c869310aca8f', 'i-06a6007fa0832f9dd', 'i-043dc5985caca25b1', 'i-0f5c719c57e0b896c', 'i-0a0f3b0b565f18ef9'] successful.
