@@ -1,6 +1,7 @@
 import boto3
 import time
 import sys
+import random
 
 iam_role = "arn:aws:iam::325356440011:instance-profile/LabInstanceProfile"
 region = "us-east-1"
@@ -8,7 +9,10 @@ bucket_name = "cw22-56-blender-bucket"
 queue_name = "render-processing-queue.fifo"
 key = "key"
 blendfile = "blendfile.blend"
-amount_of_frames = 5
+amount_of_frames = 32
+
+chaos_testing = False
+termination_count = 0
 
 # given an ec2 client and instance id, terminates that instance
 def terminate_server(ids):
@@ -36,7 +40,7 @@ def check_all_instances(instance_ids):
     ec2_resource = boto3.resource('ec2', region_name=region)
     new_instances = instance_ids
     down_instances = []
-    
+        
     # check all instances if they are in running state
     for id in new_instances:
         instance = ec2_resource.Instance(id)
@@ -61,6 +65,8 @@ def check_all_instances(instance_ids):
         extra_instances_ids = initialise_instance(extra_instances_ids)
         
         print('New instances {} have been initialised and launched!'.format(extra_instances_ids))
+        
+        print('Waiting on job completion...')
         
         # add newly initialised ids to list
         new_instances.extend(extra_instances_ids)
@@ -135,7 +141,7 @@ def send_work_remote(id='user'):
         # require unique MessageDeduplicationId so that user a single user cannot spam system
         response = queue.send_message(MessageBody='frame{}'.format(i),
                                       MessageDeduplicationId='{}-{}'.format(id, i),
-                                      MessageGroupId=id)
+                                      MessageGroupId='{}-{}'.format(id, i))
         if (response.get('Failed') != None):
             print('frame{} : was sent unsuccessfully by user {}!!!'.format(i, id))
         #print('frame{} : was sent successfully by user {}!'.format(i, id))
@@ -147,6 +153,24 @@ def get_image_folder_size():
     objs = boto3.client('s3').list_objects_v2(Bucket=bucket_name, Prefix='image-files/')
     return int(objs['KeyCount']) - 1 
 
+def random_termination(instance_ids):
+    terminate = random.randrange(0, 21)
+    new_instance_ids = instance_ids.copy()
+    terminate_ids = []
+    
+    if (terminate == 10):
+        print("Choosing instances for termination")
+        # terminate 1-4 instances randomly
+        amount = random.randrange(1, 5)
+        for _ in range(amount):
+            terminating_id = random.choice(new_instance_ids)
+            terminate_ids.append(terminating_id)
+            new_instance_ids.remove(terminating_id)
+    
+    if (len(terminate_ids) >= 1):
+        print('Randomly chosen instance ids: {}, terminating...'.format(terminate_ids))
+        terminate_server(terminate_ids)
+    
 def check_job_completion(instance_ids):
     continue_checking = True
     current_instances = instance_ids
@@ -158,6 +182,10 @@ def check_job_completion(instance_ids):
             continue_checking = False
         # wait 5 seconds before checking again
         else:
+            # if we are randomly doing chaos testing then do termination function
+            if (chaos_testing):
+                random_termination(current_instances)
+                
             # checks if all instances are running properly, if not bring up replacements
             current_instances = check_all_instances(current_instances)
             time.sleep(5)
@@ -174,7 +202,7 @@ def split_work():
         workers = amount_of_frames // 20
         
     # CHANGE THIS WHEN NEED SCALING
-    workers = 1
+    workers = 8
     
     if (workers > amount_of_frames):
         print("Cannot have more workers than frames")
@@ -183,6 +211,9 @@ def split_work():
 
 # start of program
 if __name__ == "__main__":
+    if (chaos_testing):
+        print('Chaos testing enabled.')
+    
     # send message to queue that work needs to be done
     send_work_remote()
     start_time = time.time()
@@ -194,9 +225,13 @@ if __name__ == "__main__":
     # continually check bucket to check if all frames have been rendered
     instance_ids = check_job_completion(instance_ids)
     
-    print("Job has been completed! Awaiting instance termination.")
-    print("--- %s seconds to complete job ---" % (time.time() - start_time))
+    # print how many instances were terminated during chaos testing
+    if (chaos_testing):
+        print("{} instances were randomly terminated during chaos testing.".format(termination_count))
+        
+    print("--- Job completed in %s seconds ---" % (time.time() - start_time))
     
-    # wait 30 seconds to allow instances to cleanup
-    time.sleep(30)
+    print("Awaiting instance termination.")
+    # wait 5 seconds for small cleanup
+    time.sleep(5)
     terminate_server(instance_ids)

@@ -1,0 +1,30 @@
+Frames sent to queue successfully.
+Initialising cluster, please wait.
+Instance of id: i-0bd72bf1a2ff7b55f sucessfully launched
+Instance of id: i-0a52e37f24915f8e7 sucessfully launched
+Instance of id: i-048d75938117f360a sucessfully launched
+Instance of id: i-0141a0a4ba5472877 sucessfully launched
+Instance of id: i-0d9fa0d0a9a1b7b38 sucessfully launched
+Instance of id: i-011ca49359c423801 sucessfully launched
+Instance of id: i-03a1f1a38866fff96 sucessfully launched
+Instance of id: i-0a023625c47f4aa4d sucessfully launched
+Waiting for cluster to be ready
+Instances ['i-0bd72bf1a2ff7b55f', 'i-0a52e37f24915f8e7', 'i-048d75938117f360a', 'i-0141a0a4ba5472877', 'i-0d9fa0d0a9a1b7b38', 'i-011ca49359c423801', 'i-03a1f1a38866fff96', 'i-0a023625c47f4aa4d'] are sucessfully running and commands have been sent.
+--- 35.83155798912048 seconds to initialise cluster ---
+Waiting on job completion...
+Instance id(s) ['i-0bd72bf1a2ff7b55f', 'i-0a52e37f24915f8e7', 'i-048d75938117f360a', 'i-0141a0a4ba5472877', 'i-0d9fa0d0a9a1b7b38', 'i-011ca49359c423801', 'i-03a1f1a38866fff96', 'i-0a023625c47f4aa4d'] have gone down! Attempting to bring replacement instances up.
+Instance of id: i-0335965502af670a4 sucessfully launched
+Instance of id: i-0618b12018cfa193b sucessfully launched
+Instance of id: i-0180f5c1513ae78b7 sucessfully launched
+Instance of id: i-07a02272a79f061da sucessfully launched
+Instance of id: i-0618efe24fed9843f sucessfully launched
+Instance of id: i-0df71c1d0ad6b2465 sucessfully launched
+Instance of id: i-0caddf0ce9233fff0 sucessfully launched
+Instance of id: i-00400dee1c0c37061 sucessfully launched
+Instances ['i-0335965502af670a4', 'i-0618b12018cfa193b', 'i-0180f5c1513ae78b7', 'i-07a02272a79f061da', 'i-0618efe24fed9843f', 'i-0df71c1d0ad6b2465', 'i-0caddf0ce9233fff0', 'i-00400dee1c0c37061'] are sucessfully running and commands have been sent.
+New instances ['i-0335965502af670a4', 'i-0618b12018cfa193b', 'i-0180f5c1513ae78b7', 'i-07a02272a79f061da', 'i-0618efe24fed9843f', 'i-0df71c1d0ad6b2465', 'i-0caddf0ce9233fff0', 'i-00400dee1c0c37061'] have been initialised and launched!
+Waiting on job completion...
+Job completed! terminating instances.
+--- Job completed in 800.4751427173615 seconds ---
+Awaiting instance termination.
+Termination of instances ['i-0335965502af670a4', 'i-0618b12018cfa193b', 'i-0180f5c1513ae78b7', 'i-07a02272a79f061da', 'i-0618efe24fed9843f', 'i-0df71c1d0ad6b2465', 'i-0caddf0ce9233fff0', 'i-00400dee1c0c37061'] successful.

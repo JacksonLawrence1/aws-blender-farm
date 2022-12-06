@@ -19,55 +19,55 @@ def get_trailing_numbers(s):
 def get_work(queue, retry=0):    
     # try getting jobs on queue
     local_retry = retry
+    
     try:
         # try getting a message from the queue and request its MessageGroupId 
-        message = queue.receive_messages(MaxNumberOfMessages=1, AttributeNames=['MessageGroupId'])
+        message = queue.receive_messages(MaxNumberOfMessages=1)
         body = message[0].body
-        message_group_id = message[0].attributes.get('MessageGroupId')
-        print('Work for {} received by {}'.format(body, message_group_id))
+        handle = message[0].receipt_handle
+        print('Work for {} received'.format(body))
         
         frame_number = get_trailing_numbers(body)
         
         # render file
-        render_frame(frame_number)
+        subprocess.run("sudo blender -b /home/ec2-user/{} -o /home/ec2-user/frames/frame_##### -f {}".format(blendfile, frame_number), shell=True)
         
-        # Delete message AFTER finished rendering
-        message[0].delete()
+        # ensure it file actually exists
+        if (len(os.listdir('/home/ec2-user/frames/')) > 0):
+            print('uploading frame to bucket')
+            
+            # upload frame to s3 bucket
+            subprocess.run("sudo aws s3 cp /home/ec2-user/frames/ s3://{}/image-files/ --recursive".format(bucket_name), shell=True)
+            message[0].delete()
+            print('{} was rendered and uploaded, looking for more work'.format(body))
+            
+            # remove frame from directory
+            subprocess.run("sudo rm -R /home/ec2-user/frames/*", shell=True)
+            
+            # reset retry value
+            local_retry = 0
+            get_work(queue, local_retry)
+            return
         
-        print('{} was rendered, looking for more work'.format(body))
-                
-        # reset retry value
-        local_retry = 0
+        # change message visbility so immediately 
+        queue.change_message_visibility(QueueUrl=queue_name, ReceiptHandle=handle, VisibilityTimeout=5)
     
     # When nothing is on the queue
-    except Exception:
-        # if has been waiting over 50 seconds with nothing on queue, terminate
-        if (local_retry >= 10):
-            print("Terminating instance, no work to be done.")
-            
-            # terminate instance here
-            sys.exit()
-        else:
-            # checks if any frames exist in directory
-            print(len(os.listdir('/home/ec2-user/frames/')))
-            if (len(os.listdir('/home/ec2-user/frames/')) > 0):
-                print('uploading frames to bucket')
-                # upload all frames to s3 bucket if no work found on queue
-                subprocess.run("sudo aws s3 cp /home/ec2-user/frames/ s3://{}/image-files/ --recursive".format(bucket_name), shell=True)
-                print("uploaded all frames to bucket")
-                # remove all files within frames directory
-                subprocess.run("sudo rm -R /home/ec2-user/frames/*", shell=True)
-            
-            # Wait 5 seconds before checking the queue again
-            print("No work on queue waiting before checking again.")
-            local_retry += 1
-            time.sleep(5)
-    get_work(queue, local_retry)
-
-# runs blender's command line rendering
-def render_frame(frame_number):
-    subprocess.run("sudo blender -b /home/ec2-user/{} -o /home/ec2-user/frames/frame_##### -f {}".format(blendfile, frame_number), shell=True)
+    except IndexError:
+        # Wait 30 seconds before checking the queue again
+        print("No work on queue waiting before checking again.")
+        local_retry += 1
+        time.sleep(30)
+        
+        # retry getting work
+        get_work(queue, local_retry)
+        return
     
+    finally:
+        sqs = boto3.client('sqs', region_name=region)
+        sqs.change_message_visibility(QueueUrl=queue_name, ReceiptHandle=handle, VisibilityTimeout=5)
+
+
 # start of program
 if __name__ == "__main__":
     # Get the service resource
