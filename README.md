@@ -44,4 +44,4 @@ Recommended:\
 The program should output all the rendered files into the S3 bucket!
 ![rendered files](https://user-images.githubusercontent.com/42301022/206001982-86f93f05-c21c-478d-b749-47a3a7ebbfaf.png)
 
-If running the program more than once you MUST delete the bucket or empty it so the program can function again properly.
+If running the program more than once you MUST delete the bucket or empty the image-files folder within the bucket in order to allow the program to function properly again.
