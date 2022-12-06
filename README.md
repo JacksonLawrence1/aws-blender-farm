@@ -37,10 +37,10 @@ WARNING: this will launch 8 instances and attempt to render 200 frames taking ap
 - [ ] --frames: INT, override how many frames you want rendered from 0-X, X being the amount of frames you want rendered.
 - [ ] --chaos_test: BOOL, if set to True then the program will randomly start terminating instances to simulate malicious activity
 
-Recommended:
-```python master_node.py --frames=8``` renders 8 frames of the animation taking  ~4 mins
-```python master_node.py --frames=32``` renders 32 frames of the animation taking ~12 mins
-```python master_node.py --frames=8 --workers=4``` If you want to test using half as many workers as default (~twice as long)
-```python master_node.py --frames=32 --chaos_test=True``` Unpredictable for how long it takes due to random termination, but useful if you want to test the fault-tolerance of system.
+Recommended:\
+```python master_node.py --frames=8``` renders 8 frames of the animation taking  ~4 mins\
+```python master_node.py --frames=32``` renders 32 frames of the animation taking ~12 mins\
+```python master_node.py --frames=8 --workers=4``` If you want to test using half as many workers as default (~twice as long)\
+```python master_node.py --frames=32 --chaos_test=True``` Unpredictable for how long it takes due to random termination, but useful if you want to test the fault-tolerance of system.\
 
 If running the program more than once you MUST delete the bucket or empty it so the program can function again properly.
