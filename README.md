@@ -5,6 +5,8 @@ Blender Rendering farm application
 
 blend_render_info.py was NOT made by me, it is a python script made by the Blender developers which allows reading contents of a blender file. Importantly, this couldn't be imported from the python library ```bpy``` therefore I uploaded the relevant file here.
 
+The animation file, blendfile.blend was also downloaded from Blendswap for demonstration purposes. An alternative download can be found [here](https://blendswap.com/blend/28661).
+
 ## Prerequisites
 
 - [ ] python >3.6
